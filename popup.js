@@ -1,8 +1,15 @@
-document.getElementById('preferences-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const preference = document.getElementById('preference').value;
-    // Save the preference to Chrome's local storage
-    chrome.storage.local.set({preference: preference}, function() {
-        console.log('Preference saved:', preference);
-    });
+document.getElementById('scrapeButton').addEventListener('click', function() {
+    const urlToScrape = document.getElementById('urlToScrape').value;
+    fetch('http://localhost:5000/api/scrape', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: urlToScrape }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('scrapedData').textContent = JSON.stringify(data.scrapedData);
+    })
+    .catch(error => console.error('Error:', error));
 });
