@@ -5,7 +5,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def scrape():
     # Receive data from Selenium script
-    # data = request.json
+    data = request.json
     
     # Process data (e.g., scrape website)
     # ...
