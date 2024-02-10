@@ -1,26 +1,12 @@
 {
-  "manifest_version": 3,
-  "name": "Sephora Personalized Recommendations",
+  "manifest_version": 2,
+  "name": "Website URL Sender",
   "version": "1.0",
-  "description": "Get personalized product recommendations on Sephora.",
-  "permissions": ["activeTab", "storage"],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "shoppingcart.jpg",
-      "48": "shoppingcart.jpg",
-      "128": "shoppingcart.jpg"
-    }
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
   },
-  "content_scripts": [
-    {
-      "matches": ["https://www.sephora.com/*"],
-      "js": ["content.js"]
-    }
-  ],
-  "icons": {
-    "16": "shoppingcart.jpg",
-    "48": "shoppingcart.jpg",
-    "128": "shoppingcart.jpg"
-  }
+  "permissions": [
+    "activeTab"
+  ]
 }
