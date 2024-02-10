@@ -20,6 +20,7 @@ def run_selenium():
     # Adjust the XPath expression to match the review elements on the webpage
     review_elements = driver.find_elements(By.XPATH, '/html/body/div[2]/div[2]/section/section[8]/div[3]/div[2]/div/div/div/div/div/div/ul/li[1]/div/div[2]/p[2]/text()')
     reviews = [elem.text for elem in review_elements]
+    print(reviews)
 
     # Simple summary of reviews - concatenate and truncate for simplicity
     # This is a placeholder for more sophisticated summarization logic
@@ -58,7 +59,7 @@ def scrape():
 
     elif request.method == 'GET':
 
-        # run_selenium()
+        run_selenium()
         # Handle GET request (e.g., render a webpage)
         # You can render HTML templates or return plain text/html responses
         return 'Hello, World!'  # Example response for GET request
