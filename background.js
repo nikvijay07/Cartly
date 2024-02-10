@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'sendURL') {
         const url = window.location.href;
@@ -13,3 +14,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         .catch(error => console.error('Error:', error));
     }
 });
+=======
+chrome.action.onClicked.addListener((tab) => {
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['content.js']
+    });
+  });
+  
+>>>>>>> ramya

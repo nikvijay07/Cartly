@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "manifest_version": 2,
   "name": "Website URL Sender",
   "version": "1.0",
@@ -8,5 +9,23 @@
   },
   "permissions": [
     "activeTab"
+=======
+  "manifest_version": 3,
+  "name": "Review Scraper",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "background": {
+      "service_worker": "background.js"
+  },
+  "action": {
+      "default_popup": "popup.html",
+      "default_icon": "soup.png"
+  },
+  "content_scripts": [
+      {
+          "matches": ["<all_urls>"],
+          "js": ["contentScript.js"]
+      }
+>>>>>>> ramya
   ]
 }
