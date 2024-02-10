@@ -1,10 +1,26 @@
 {
-    "name": "Hello Extensions",
-    "description": "Base Level Extension",
-    "version": "1.0",
-    "manifest_version": 3,
-    "action": {
-      "default_popup": "Main.html",
-      "default_icon": "shoppingcart.jpg"
+  "manifest_version": 3,
+  "name": "Sephora Personalized Recommendations",
+  "version": "1.0",
+  "description": "Get personalized product recommendations on Sephora.",
+  "permissions": ["activeTab", "storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "shoppingcart.jpg",
+      "48": "shoppingcart.jpg",
+      "128": "shoppingcart.jpg"
     }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.sephora.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "16": "shoppingcart.jpg",
+    "48": "shoppingcart.jpg",
+    "128": "shoppingcart.jpg"
   }
+}
