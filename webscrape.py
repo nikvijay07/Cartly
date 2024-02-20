@@ -6,15 +6,23 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import requests
+from transformers import pipeline
+from spacy.lang.en import English 
 
 app = Flask(__name__)
+
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+# Load the spaCy model for sentence segmentation
+nlp = English()
+nlp.add_pipe('sentencizer')
+
 
 def run_selenium():
     #chrome driver
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-    url = 'https://www.airbnb.com/rooms/833990444311719408/reviews?adults=1&category_tag=Tag%3A5348&children=0&enable_m3_private_room=true&infants=0&pets=0&photo_id=1594712943&search_mode=flex_destinations_search&check_in=2024-03-03&check_out=2024-03-08&source_impression_id=p3_1708319472_TMgo5yGpdPKw01UD&previous_page_section_name=1000&federated_search_id=3018849f-aad7-4182-b800-0d9b233142eb'
+    url = 'https://www.airbnb.com/rooms/584309059088390612/reviews?check_in=2024-02-22&check_out=2024-02-23&source_impression_id=p3_1708389808_e%2BNnDI7%2FC85Vsb%2BE&previous_page_section_name=1000&federated_search_id=76096bfd-e894-44dc-91ea-335bc6bfb073'
     driver.get(url)
 
     # Wait for the elements to be loaded
@@ -31,10 +39,48 @@ def run_selenium():
         else:
             print("Review (7th span) not found")
 
+    # Summarize all reviews
+    summary_of_all_reviews = summarize_in_chunks(all_reviews_text, summarizer)
+    print("SUMMMMM :) ", summary_of_all_reviews)
+
     # Send POST request to Flask server
-    response = requests.post('http://127.0.0.1:5000', json={'summary': all_reviews_text})
+    response = requests.post('http://127.0.0.1:5000', json={'summaries': summary_of_all_reviews})
 
     driver.quit()
+    return summary_of_all_reviews
+
+
+
+def extract_key_sentences(text, nlp, max_sentences=6):
+    # Use spaCy to divide the text into sentences
+    doc = nlp(text)
+    sentences = list(doc.sents)
+    # Here you could add logic to select the most important sentences
+    #
+    #
+    #
+    # Select the most important sentences, here simply the first few
+    key_sentences = ' '.join(sentence.text for sentence in sentences[:max_sentences])
+    return key_sentences #single string that contains the concatenated text of the first few sentences
+
+
+def summarize_in_chunks(reviews, summarizer, chunk_size=1024, max_sentences_per_chunk=6):
+    # Join all reviews into a single text if it's a list
+    text = ' '.join(reviews) if isinstance(reviews, list) else reviews
+    # Tokenize the text to see if it exceeds the chunk size
+    tokens = summarizer.tokenizer.encode(text)
+    if len(tokens) <= chunk_size:
+        return summarizer(text)[0]['summary_text']
+
+    # If the text is too long, split it and summarize the key points
+    chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+    key_points = []
+    for chunk in chunks:
+        key_points.append(extract_key_sentences(chunk, nlp, max_sentences_per_chunk))
+    
+    #summarize the concatenated key points
+    key_text = ' '.join(key_points)
+    return summarizer(key_text)[0]['summary_text']
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -44,13 +90,13 @@ def scrape():
         data = request.get_json()  # JSON data from POST request
         # Process the data
         if not data:
-            return jsonify({"err": "no json received"}), 400
-        # print("Received post data:", data)
+            return jsonify({"err": "no json received"}), 400  
         return jsonify(data)
     elif request.method == 'GET':
-        run_selenium()
+        summary = run_selenium()
         # Handle GET request for demo purpose
-        return "selenium init"
+        return jsonify({"summaryy": summary})
 
 if __name__ == '__main__':
     app.run(debug=True)
+
