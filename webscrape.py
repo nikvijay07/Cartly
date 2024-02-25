@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import requests
 from transformers import pipeline
+import json
 from spacy.lang.en import English 
 
 app = Flask(__name__)
@@ -41,7 +42,11 @@ def run_selenium():
 
     # Summarize all reviews
     summary_of_all_reviews = summarize_in_chunks(all_reviews_text, summarizer)
+    json_summary = {'Summary': summary_of_all_reviews}
+    final_data = json.dumps(json_summary)
     print("SUMMMMM :) ", summary_of_all_reviews)
+    driver.execute
+
 
     # Send POST request to Flask server
     response = requests.post('http://127.0.0.1:5000', json={'summaries': summary_of_all_reviews})
@@ -88,6 +93,8 @@ def scrape():
     if request.method == 'POST':
         #scrape data
         data = request.get_json()  # JSON data from POST request
+        url = data.body
+        
         # Process the data
         if not data:
             return jsonify({"err": "no json received"}), 400  
