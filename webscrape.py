@@ -18,12 +18,11 @@ nlp = English()
 nlp.add_pipe('sentencizer')
 
 
-def run_selenium():
+def run_selenium(url):
     #chrome driver
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-    url = 'https://www.airbnb.com/rooms/584309059088390612/reviews?check_in=2024-02-22&check_out=2024-02-23&source_impression_id=p3_1708389808_e%2BNnDI7%2FC85Vsb%2BE&previous_page_section_name=1000&federated_search_id=76096bfd-e894-44dc-91ea-335bc6bfb073'
     driver.get(url)
 
     # Wait for the elements to be loaded
@@ -100,9 +99,10 @@ def scrape():
             return jsonify({"err": "no json received"}), 400  
         return jsonify(data)
     elif request.method == 'GET':
-        summary = run_selenium()
+        param1 = request.args.get('param1')
+        summary = run_selenium(url=param1)
         # Handle GET request for demo purpose
-        return jsonify({"summaryy": summary})
+        return jsonify({"summary": summary})
 
 if __name__ == '__main__':
     app.run(debug=True)
