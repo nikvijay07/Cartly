@@ -2,12 +2,27 @@
 <html>
 <head>
     <title>Scrape Reviews</title>
+    <link rel="stylesheet" type="text/css" href="StartupPage.css"/>
+
 </head>
 <body>
-    <h1>Scrape Reviews</h1>
-    <input type="text" id="urlToScrape" placeholder="Enter URL">
-    <button id="scrapeButton">Scrape</button>
-    <div id="scrapedData"></div>
+    <div class = "heading">
+        <h1> Review Summarizer </h1>
+    </div>
+    <div class = "description">
+        <p>
+            Press "Generate" to get a concise review of this property!
+        </p>
+    </div>
+    <div class = "MainButton">
+        <button id="generate">
+            Generate
+        </button>
+    </div>
+    <div>
+       <p id= "Summary"></p>
+    </div>
+
     <h5 id = 'currentUrl'></h5> 
     <script src="popup.js"></script>
 </body>
